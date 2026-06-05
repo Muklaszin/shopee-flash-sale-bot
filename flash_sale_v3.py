@@ -53,7 +53,6 @@ HEADERS_BASE = {
     "User-Agent": "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36",
     "Accept": "application/json",
     "Accept-Language": "id-ID,id;q=0.9,en;q=0.8",
-    "Accept-Encoding": "gzip, deflate, br",
     "Content-Type": "application/json",
     "Referer": "https://shopee.co.id/",
     "Origin": "https://shopee.co.id",
