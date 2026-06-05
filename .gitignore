@@ -1,2 +1,4 @@
+cookies.json
 __pycache__/
 *.pyc
+bfs_state.json
