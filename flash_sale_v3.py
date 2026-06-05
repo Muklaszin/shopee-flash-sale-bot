@@ -186,14 +186,37 @@ class ShopeeClient:
     
     def get_addresses(self) -> list:
         data = self._request("GET", API["addresses"])
-        addresses = data.get("data", {}).get("addresses", [])
+        print(f"  📡 Address API response: {json.dumps(data)[:500]}")
+        
+        # Try multiple response formats
+        addresses = (
+            data.get("data", {}).get("addresses", [])
+            or data.get("data", {}).get("address_list", [])
+            or data.get("addresses", [])
+            or (data.get("data", []) if isinstance(data.get("data"), list) else [])
+        )
+        
         if addresses and not self.address_id:
             for addr in addresses:
-                if addr.get("is_default"):
-                    self.address_id = addr["addressid"]
+                if addr.get("is_default") or addr.get("is_default_address"):
+                    self.address_id = addr.get("addressid") or addr.get("address_id") or addr.get("id")
                     break
             if not self.address_id and addresses:
-                self.address_id = addresses[0]["addressid"]
+                first = addresses[0]
+                self.address_id = first.get("addressid") or first.get("address_id") or first.get("id")
+        
+        # If still no address, prompt user
+        if not self.address_id:
+            print("  ⚠️  Could not auto-detect address.")
+            print("  📍 Go to Shopee App → My Account → Addresses → tap your address")
+            print("  📍 The address ID is in the URL or you can check order history")
+            try:
+                addr_input = input("  👉 Enter your Address ID (number): ").strip()
+                if addr_input.isdigit():
+                    self.address_id = int(addr_input)
+            except:
+                pass
+        
         return addresses
     
     def get_item_info(self, item_id: int, shop_id: int) -> dict:
