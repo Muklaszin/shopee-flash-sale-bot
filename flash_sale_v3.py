@@ -229,10 +229,12 @@ class ShopeeClient:
             offset = page * 20
             url = f"{API['flash_sessions']}?limit=20&offset={offset}&need_items=1&with_dp_items=1"
             data = self._request("GET", url)
-            sessions = data.get("data", {}).get("sessions", [])
+            print(f"  📡 Flash sale API response (page {page}): {json.dumps(data)[:500]}")
+            sessions = data.get("data", {}).get("sessions", []) or data.get("data", {}).get("flash_sale_sessions", []) or data.get("data", [])
             if not sessions:
                 break
-            all_sessions.extend(sessions)
+            if isinstance(sessions, list):
+                all_sessions.extend(sessions)
             time.sleep(0.3)
         return all_sessions
     
